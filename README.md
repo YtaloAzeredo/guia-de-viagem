@@ -66,30 +66,25 @@ guia_viagem/
 └── 📖 INSTALACAO.md          # Guia completo
 ```
 
-## 🚀 Instalação Rápida
+## 🚀 Uso Rápido
 
-### Opção 1: Configuração Automática (Recomendada)
+### 💬 Interface Interativa (Recomendado)
 ```bash
-# 1. Instale dependências
-pip install -r requirements.txt
-
-# 2. Execute configuração automática
-python setup.py
-
-# 3. Configure suas APIs no arquivo .env gerado
-# GROQ_API_KEY=sua_chave_groq
-# PINECONE_API_KEY=sua_chave_pinecone
-
-# 4. Inicie o sistema
-python src/main.py
+python run.py
 ```
+*Interface de chat em tempo real - a melhor forma de testar o sistema!*
 
-### Opção 2: Manual
+### 🤖 Demonstração Automatizada
 ```bash
-pip install -r requirements.txt
-cp .env.example .env
-# Edite .env com suas chaves de API
-python src/main.py
+python demo_auto.py
+```
+*Demonstra todos os tipos de consulta sem interação*
+
+### 📊 Testes Completos
+```bash
+python demo_final.py          # Demo detalhada
+python examples/demo.py       # Interface com menu
+python quick_start.py         # Teste rápido
 ```
 
 📖 **[Guia Detalhado de Instalação](INSTALACAO.md)**
