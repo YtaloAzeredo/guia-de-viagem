@@ -1,30 +1,30 @@
-# Core LangChain dependencies
+# ===================================
+# Guia de Viagem - Dependências Core
+# ===================================
+
+# LangChain Framework
 langchain==0.1.17
 langchain-community==0.0.37
 langchain-core==0.1.52
 langchain-groq==0.1.4
 
-# Vector database
-pinecone==5.0.0
-
-# LLM providers
+# LLM e AI Providers
 groq==0.8.0
 
-# Data processing
-pandas==2.2.2
-numpy==1.26.4
+# Base de Dados Vetorial
+pinecone==5.0.0
 
-# Environment management
-python-dotenv==1.0.1
-
-# Text processing and embeddings
+# Processamento de Texto e Embeddings
 tiktoken==0.7.0
 sentence-transformers==2.7.0
 
-# Utilities
+# Processamento de Dados
+pandas==2.2.2
+numpy==1.26.4
+
+# Configuração e Ambiente
+python-dotenv==1.0.1
+
+# Validação de Dados
 pydantic==2.7.1
 typing-extensions==4.11.0
-
-# Optional: For advanced features
-streamlit==1.34.0  # For web interface
-rich==13.7.1       # For beautiful console output
