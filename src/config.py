@@ -8,8 +8,6 @@ from dotenv import load_dotenv
 load_dotenv()
 
 class Config:
-    """Configurações centralizadas do sistema."""
-    
     # APIs
     GROQ_API_KEY = os.getenv("GROQ_API_KEY")
     PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
@@ -17,17 +15,15 @@ class Config:
     PINECONE_INDEX_NAME = os.getenv("PINECONE_INDEX_NAME", "guia-viagem")
     
     # Modelos
-    GROQ_MODEL = "llama-3.1-8b-instant"  # Modelo Groq padrão
-    EMBEDDING_MODEL = "all-MiniLM-L6-v2"  # Modelo para embeddings
-    
-    # Dimensões do vetor (para o modelo all-MiniLM-L6-v2)
-    EMBEDDING_DIMENSION = 384
+    GROQ_MODEL = "llama-3.1-8b-instant"
+    EMBEDDING_MODEL = "all-MiniLM-L6-v2"
     
     # Configurações RAG
-    TOP_K_RESULTS = 5  # Número de resultados similares a recuperar
-    SIMILARITY_THRESHOLD = 0.7  # Threshold mínimo de similaridade
+    EMBEDDING_DIMENSION = 384
+    TOP_K_RESULTS = 5
+    SIMILARITY_THRESHOLD = 0.7
     
-    # Categorias de intenções
+    # Intenções suportadas
     INTENTIONS = {
         "roteiro-viagem": "Gerar roteiros de viagem personalizados",
         "logistica-transporte": "Informações sobre transporte e acomodação",

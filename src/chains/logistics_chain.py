@@ -9,55 +9,54 @@ from ..config import Config
 
 
 class LogisticsChain:
-    """Chain especializada em logística de viagens."""
-    
     def __init__(self, rag_system):
-        """
-        Inicializa a chain de logística.
-        
-        Args:
-            rag_system: Sistema RAG para busca de informações
-        """
         self.config = Config()
         self.rag_system = rag_system
-        
-        # Inicializa LLM
         self.llm = ChatGroq(
             groq_api_key=self.config.GROQ_API_KEY,
             model_name=self.config.GROQ_MODEL,
-            temperature=0.2  # Baixa temperatura para informações precisas
+            temperature=0.2
         )
-        
-        # Template para informações logísticas
         self.logistics_template = PromptTemplate(
             input_variables=["query", "transport_info", "city_info"],
-            template="""
-Você é um especialista em logística de viagens e transporte.
+            template="""🚀 ESPECIALISTA EM LOGÍSTICA DE VIAGENS
 
-PERGUNTA DO USUÁRIO: {query}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+❓ PERGUNTA: {query}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-INFORMAÇÕES DE TRANSPORTE DISPONÍVEIS:
+🚌 TRANSPORTE DISPONÍVEL:
 {transport_info}
 
-INFORMAÇÕES GERAIS DA CIDADE:
+🏙️ INFORMAÇÕES DA CIDADE:
 {city_info}
 
-INSTRUÇÕES:
-1. Responda de forma clara e direta à pergunta sobre logística
-2. Inclua informações práticas sobre transporte, horários e preços
-3. Forneça alternativas quando possível
-4. Adicione dicas de segurança e eficiência
-5. Mencione apps úteis ou cartões de transporte
-6. Se for sobre acomodação, sugira áreas recomendadas
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-TIPOS DE INFORMAÇÃO A INCLUIR:
-- Como chegar ao destino específico
-- Opções de transporte (preços, horários, duração)
-- Dicas para evitar multidões ou economizar
-- Informações sobre acessibilidade
-- Alternativas em caso de problemas
+🎯 RESPONDA COM INFORMAÇÕES PRÁTICAS:
 
-RESPOSTA DETALHADA:"""
+🛣️  COMO CHEGAR:
+   • Opções de transporte disponíveis
+   • Preços, horários e duração estimada
+   • Rotas mais eficientes
+
+💡 DICAS INTELIGENTES:
+   • Alternativas para economizar
+   • Evitar horários de pico e multidões  
+   • Apps úteis e cartões de transporte
+
+🏨 ACOMODAÇÃO:
+   • Áreas recomendadas para hospedagem
+   • Proximidade com transporte público
+
+♿ ACESSIBILIDADE:
+   • Informações para mobilidade reduzida
+
+⚠️  PLANO B:
+   • Alternativas em caso de problemas
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎊 SUA RESPOSTA DETALHADA:"""
         )
         
         # Cria a chain
@@ -110,7 +109,6 @@ RESPOSTA DETALHADA:"""
             }
     
     def _detect_city_from_query(self, query: str) -> str:
-        """Detecta cidade a partir da consulta."""
         query_lower = query.lower()
         for city in self.config.SUPPORTED_CITIES:
             if city.lower() in query_lower:
@@ -118,7 +116,6 @@ RESPOSTA DETALHADA:"""
         return ""
     
     def _get_transport_info(self, query: str, city: str) -> str:
-        """Busca informações específicas de transporte."""
         # Palavras-chave para diferentes tipos de transporte
         transport_keywords = {
             "metro": ["metrô", "metro", "subway", "underground"],
@@ -156,7 +153,7 @@ RESPOSTA DETALHADA:"""
             return self._get_general_transport_info(city)
     
     def _get_city_logistics_info(self, city: str) -> str:
-        """Obtém informações logísticas gerais da cidade."""
+
         if not city:
             return "Cidade não especificada."
         
@@ -170,7 +167,7 @@ RESPOSTA DETALHADA:"""
             return self._get_default_city_info(city)
     
     def _format_transport_info(self, transport_results: List[Dict]) -> str:
-        """Formata informações de transporte para o prompt."""
+
         if not transport_results:
             return "Informações de transporte não encontradas."
         
@@ -197,7 +194,7 @@ RESPOSTA DETALHADA:"""
         return "\n\n---\n\n".join(formatted_info)
     
     def _format_city_info(self, results: List[Dict], city: str) -> str:
-        """Formata informações gerais da cidade."""
+
         info_parts = [f"INFORMAÇÕES GERAIS - {city}"]
         
         for result in results:
@@ -207,7 +204,7 @@ RESPOSTA DETALHADA:"""
         return "\n".join(info_parts)
     
     def _get_general_transport_info(self, city: str) -> str:
-        """Informações gerais de transporte quando não há dados específicos."""
+
         general_info = {
             "Rio de Janeiro": """
 TRANSPORTE NO RIO DE JANEIRO:
@@ -230,11 +227,11 @@ TRANSPORTE EM PARIS:
         return general_info.get(city, f"Informações específicas de {city} não disponíveis.")
     
     def _get_default_city_info(self, city: str) -> str:
-        """Informações padrão quando não há dados específicos."""
+
         return f"Informações logísticas gerais para {city} não disponíveis no banco de dados."
     
     def _classify_logistics_type(self, query: str) -> str:
-        """Classifica o tipo de consulta logística."""
+
         query_lower = query.lower()
         
         if any(word in query_lower for word in ["como chegar", "transporte", "metrô", "ônibus"]):

@@ -9,61 +9,47 @@ from ..config import Config
 
 
 class ItineraryChain:
-    """Chain especializada em criar roteiros de viagem."""
-    
     def __init__(self, rag_system):
-        """
-        Inicializa a chain de roteiros.
-        
-        Args:
-            rag_system: Sistema RAG para busca de informações
-        """
         self.config = Config()
         self.rag_system = rag_system
         
-        # Inicializa LLM
         self.llm = ChatGroq(
             groq_api_key=self.config.GROQ_API_KEY,
             model_name=self.config.GROQ_MODEL,
             temperature=0.3
         )
-        
-        # Template para geração de roteiros
         self.itinerary_template = PromptTemplate(
             input_variables=["query", "duration", "city", "interests", "locations", "user_preferences"],
-            template="""
-Você é um especialista em turismo e criação de roteiros personalizados.
+            template="""🎯 ESPECIALISTA EM ROTEIROS DE VIAGEM
 
-SOLICITAÇÃO DO USUÁRIO: {query}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📋 SOLICITAÇÃO: {query}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-INFORMAÇÕES COLETADAS:
-- Cidade: {city}
-- Duração: {duration}
-- Interesses: {interests}
-- Preferências específicas: {user_preferences}
+🏙️  DESTINO: {city}
+⏰ DURAÇÃO: {duration} dias  
+🎨 INTERESSES: {interests}
+💡 PREFERÊNCIAS: {user_preferences}
 
-LOCAIS E ATRAÇÕES DISPONÍVEIS:
+🏛️ LOCAIS E ATRAÇÕES DISPONÍVEIS:
 {locations}
 
-INSTRUÇÕES:
-1. Crie um roteiro detalhado e personalizado
-2. Organize por dias e horários
-3. Considere proximidade geográfica para otimizar deslocamentos
-4. Inclua tempo estimado para cada atividade
-5. Adicione dicas práticas e recomendações
-6. Sugira opções alternativas quando possível
-7. Considere horários de funcionamento e preços quando disponíveis
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-FORMATO DE RESPOSTA:
-- Use formatação clara com cabeçalhos
-- Organize por dias (Dia 1, Dia 2, etc.)
-- Para cada local inclua: nome, tempo estimado, dicas importantes
-- Adicione seção de dicas gerais ao final
+🗓️ CRIE UM ROTEIRO DETALHADO com:
 
-ROTEIRO PERSONALIZADO:"""
+📅 ORGANIZAÇÃO POR DIAS (Dia 1, Dia 2, etc.)
+🕐 Horários específicos e tempo estimado para cada atividade  
+📍 Otimização de deslocamentos por proximidade geográfica
+💰 Informações de preços quando disponíveis
+🕒 Horários de funcionamento dos locais
+🎯 Dicas práticas e alternativas
+⚠️  Avisos importantes (reservas, multidões, etc.)
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎊 SEU ROTEIRO PERSONALIZADO:"""
         )
         
-        # Cria a chain
         self.chain = (
             self.itinerary_template 
             | self.llm 
@@ -71,24 +57,14 @@ ROTEIRO PERSONALIZADO:"""
         )
     
     def generate_itinerary(self, route_info: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Gera roteiro baseado nas informações de roteamento.
-        
-        Args:
-            route_info: Informações do router sobre a consulta
-            
-        Returns:
-            Dicionário com o roteiro gerado
-        """
         query = route_info["original_query"]
         extracted_info = route_info["extracted_info"]
         
-        # Extrai informações específicas
         cities = extracted_info.get("cities", [])
-        duration = extracted_info.get("duration_days", 3)  # Default 3 dias
+        duration = extracted_info.get("duration_days", 3)
         interests = extracted_info.get("interests", [])
         
-        # Define cidade principal
+        # Cidade principal
         main_city = cities[0] if cities else self._detect_city_from_query(query)
         
         if not main_city:
@@ -133,7 +109,6 @@ ROTEIRO PERSONALIZADO:"""
             }
     
     def _detect_city_from_query(self, query: str) -> str:
-        """Detecta cidade a partir da consulta."""
         query_lower = query.lower()
         for city in self.config.SUPPORTED_CITIES:
             if city.lower() in query_lower:
@@ -141,7 +116,6 @@ ROTEIRO PERSONALIZADO:"""
         return ""
     
     def _get_relevant_locations(self, city: str, interests: List[str], duration: int) -> List[Dict]:
-        """Busca locais relevantes para o roteiro."""
         # Quantidade de locais baseada na duração
         num_locations = min(duration * 4, 15)  # Máximo 4 por dia, limite 15
         
@@ -170,7 +144,6 @@ ROTEIRO PERSONALIZADO:"""
         return locations
     
     def _format_locations_for_prompt(self, locations: List[Dict]) -> str:
-        """Formata locais para o prompt."""
         if not locations:
             return "Nenhum local específico encontrado."
         
@@ -198,7 +171,6 @@ ROTEIRO PERSONALIZADO:"""
         return "\n\n---\n\n".join(formatted_locations)
     
     def _extract_user_preferences(self, query: str) -> str:
-        """Extrai preferências específicas do usuário."""
         query_lower = query.lower()
         preferences = []
         

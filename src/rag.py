@@ -5,13 +5,12 @@ import json
 import os
 from typing import List, Dict, Any, Optional
 
-# Importações com tratamento de erro
+# Importações
 try:
     from sentence_transformers import SentenceTransformer
 except ImportError:
     SentenceTransformer = None
 
-# Importação do Pinecone moderno
 try:
     from pinecone import Pinecone, ServerlessSpec
 except ImportError:
@@ -25,14 +24,10 @@ except ImportError:
 
 
 class RAGSystem:
-    """Sistema RAG para recuperação e geração de conteúdo."""
-    
     def __init__(self):
-        """Inicializa o sistema RAG."""
         self.config = Config()
         self.config.validate()
         
-        # Verifica se as dependências estão disponíveis
         if SentenceTransformer is None or Pinecone is None:
             print("⚠️  Dependências não disponíveis - usando modo fallback")
             self.use_fallback = True

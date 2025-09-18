@@ -9,62 +9,52 @@ from ..config import Config
 
 
 class TranslationChain:
-    """Chain especializada em tradução e guias de idiomas."""
-    
     def __init__(self, rag_system=None):
-        """
-        Inicializa a chain de tradução.
-        
-        Args:
-            rag_system: Sistema RAG (opcional para esta chain)
-        """
         self.config = Config()
         self.rag_system = rag_system
-        
-        # Inicializa LLM
         self.llm = ChatGroq(
             groq_api_key=self.config.GROQ_API_KEY,
             model_name=self.config.GROQ_MODEL,
-            temperature=0.1  # Muito baixa para traduções precisas
+            temperature=0.1
         )
-        
-        # Template para guias de tradução
         self.translation_template = PromptTemplate(
             input_variables=["query", "target_language", "context", "travel_scenario"],
-            template="""
-Você é um especialista em idiomas e tradução para viajantes.
+            template="""🌍 ESPECIALISTA EM TRADUÇÃO PARA VIAJANTES
 
-SOLICITAÇÃO: {query}
-IDIOMA ALVO: {target_language}
-CONTEXTO DA VIAGEM: {context}
-CENÁRIO: {travel_scenario}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🗣️  SOLICITAÇÃO: {query}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-INSTRUÇÕES:
-1. Forneça traduções precisas e contextualmente apropriadas
-2. Inclua pronúncia aproximada em português quando útil
-3. Organize por categorias relevantes para turistas
-4. Adicione dicas culturais importantes
-5. Inclua variações regionais quando relevante
-6. Forneça exemplos de uso prático
+🇺🇳 IDIOMA ALVO: {target_language}
+🎯 CONTEXTO: {context}
+🎬 CENÁRIO: {travel_scenario}
 
-CATEGORIAS SUGERIDAS:
-- Cumprimentos básicos
-- Pedindo informações
-- No restaurante
-- No hotel
-- Transporte
-- Emergências
-- Compras
-- Números e horários
-- Frases de cortesia
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-FORMATO DE RESPOSTA:
-- Use formatação clara com categorias
-- Inclua a frase em português, tradução e pronúncia
-- Adicione contexto cultural quando importante
-- Sugira gestos ou expressões não-verbais úteis
+📚 ORGANIZE POR CATEGORIAS:
 
-GUIA DE TRADUÇÃO PRÁTICO:"""
+👋 CUMPRIMENTOS BÁSICOS
+🍽️  NO RESTAURANTE  
+🏨 NO HOTEL
+🚌 TRANSPORTE
+🆘 EMERGÊNCIAS
+🛒 COMPRAS
+🕐 NÚMEROS E HORÁRIOS
+🙏 FRASES DE CORTESIA
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+📖 FORMATO PARA CADA FRASE:
+   🇧🇷 Português → 🌍 Tradução → 🔊 Pronúncia
+
+🎭 EXTRAS IMPORTANTES:
+   • Dicas culturais e gestos específicos
+   • Variações regionais relevantes  
+   • Exemplos práticos de uso
+   • Situações onde usar cada frase
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎊 SEU GUIA DE TRADUÇÃO:"""
         )
         
         # Cria a chain
@@ -75,15 +65,6 @@ GUIA DE TRADUÇÃO PRÁTICO:"""
         )
     
     def get_translation_guide(self, route_info: Dict[str, Any]) -> Dict[str, Any]:
-        """
-        Gera guia de tradução baseado na consulta.
-        
-        Args:
-            route_info: Informações do router sobre a consulta
-            
-        Returns:
-            Dicionário com guia de tradução
-        """
         query = route_info["original_query"]
         extracted_info = route_info["extracted_info"]
         
@@ -116,7 +97,6 @@ GUIA DE TRADUÇÃO PRÁTICO:"""
             }
     
     def _detect_target_language(self, query: str, extracted_info: Dict) -> str:
-        """Detecta o idioma alvo da tradução."""
         query_lower = query.lower()
         
         # Mapeamento de idiomas comuns para turistas

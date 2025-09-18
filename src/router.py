@@ -8,7 +8,6 @@ try:
     from langchain_core.output_parsers import StrOutputParser
     from langchain_groq import ChatGroq
 except ImportError:
-    # Mock classes para quando as dependências não estão instaladas
     class PromptTemplate:
         def __init__(self, **kwargs):
             pass
@@ -21,32 +20,23 @@ except ImportError:
 try:
     from .config import Config
 except ImportError:
-    # Importação absoluta como fallback
     from config import Config
 
 
 class IntentionRouter:
-    """Router responsável por classificar intenções de consultas."""
-    
     def __init__(self):
-        """Inicializa o router de intenções."""
         self.config = Config()
         
-        # Só valida se as dependências estão disponíveis
         try:
             self.config.validate()
             
-            # Inicializa LLM Groq
             self.llm = ChatGroq(
                 groq_api_key=self.config.GROQ_API_KEY,
                 model_name=self.config.GROQ_MODEL,
-                temperature=0.1  # Baixa temperatura para classificação consistente
+                temperature=0.1
             )
         except (ValueError, Exception):
-            # Modo fallback sem LLM
             self.llm = None
-        
-        # Template e chain só se LLM disponível
         if self.llm is not None:
             # Template para classificação de intenções
             self.classification_template = PromptTemplate(

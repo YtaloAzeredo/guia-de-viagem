@@ -9,55 +9,61 @@ from ..config import Config
 
 
 class LocalInfoChain:
-    """Chain especializada em informações locais específicas."""
-    
     def __init__(self, rag_system):
-        """
-        Inicializa a chain de informações locais.
-        
-        Args:
-            rag_system: Sistema RAG para busca de informações
-        """
         self.config = Config()
         self.rag_system = rag_system
-        
-        # Inicializa LLM
         self.llm = ChatGroq(
             groq_api_key=self.config.GROQ_API_KEY,
             model_name=self.config.GROQ_MODEL,
-            temperature=0.2  # Baixa temperatura para informações precisas
+            temperature=0.2
         )
-        
-        # Template para informações locais
         self.local_info_template = PromptTemplate(
             input_variables=["query", "relevant_places", "additional_context"],
-            template="""
-Você é um especialista local e guia turístico experiente.
+            template="""🏛️ GUIA TURÍSTICO LOCAL EXPERIENTE
 
-PERGUNTA DO USUÁRIO: {query}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+❓ PERGUNTA: {query}
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-LOCAIS E INFORMAÇÕES RELEVANTES ENCONTRADAS:
+🏛️ LOCAIS ENCONTRADOS:
 {relevant_places}
 
-CONTEXTO ADICIONAL:
+📋 CONTEXTO ADICIONAL:
 {additional_context}
 
-INSTRUÇÕES:
-1. Responda de forma precisa e detalhada à pergunta específica
-2. Use as informações encontradas como base principal
-3. Inclua detalhes práticos: horários, preços, localização
-4. Adicione dicas úteis e recomendações pessoais
-5. Mencione alternativas próximas quando relevante
-6. Seja específico sobre como chegar e o que esperar
-7. Inclua avisos importantes (segurança, reservas necessárias, etc.)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-FORMATO DA RESPOSTA:
-- Resposta direta à pergunta
-- Informações detalhadas sobre cada local mencionado
-- Dicas práticas e recomendações
-- Informações complementares relevantes
+🎯 RESPONDA COM INFORMAÇÕES COMPLETAS:
 
-RESPOSTA ESPECIALIZADA:"""
+📍 DETALHES PRÁTICOS:
+   • Localização exata e endereço
+   • Horários de funcionamento  
+   • Preços de entrada e promoções
+   • Melhor época para visitar
+
+🚇 COMO CHEGAR:
+   • Transporte público mais eficiente
+   • Opções de táxi/Uber com preço estimado
+   • Estacionamento (se aplicável)
+
+👀 O QUE ESPERAR:
+   • Principais atrações e destaques
+   • Tempo recomendado para a visita
+   • Nível de dificuldade ou acessibilidade
+
+💡 DICAS DE ESPECIALISTA:
+   • Alternativas próximas interessantes
+   • Onde comer nas redondezas
+   • Melhores horários (evitar multidões)
+   • O que levar ou vestir
+
+⚠️  AVISOS IMPORTANTES:
+   • Necessidade de reservas antecipadas
+   • Questões de segurança
+   • Restrições ou limitações
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🎊 SUA RESPOSTA ESPECIALIZADA:"""
         )
         
         # Cria a chain
@@ -110,7 +116,7 @@ RESPOSTA ESPECIALIZADA:"""
             }
     
     def _detect_city_from_query(self, query: str) -> str:
-        """Detecta cidade a partir da consulta."""
+
         query_lower = query.lower()
         for city in self.config.SUPPORTED_CITIES:
             if city.lower() in query_lower:
@@ -118,7 +124,7 @@ RESPOSTA ESPECIALIZADA:"""
         return ""
     
     def _search_relevant_places(self, query: str, city: str) -> str:
-        """Busca locais relevantes para a consulta."""
+
         # Se cidade específica for mencionada
         if city:
             results = self.rag_system.search_by_city(query, city, top_k=5)
@@ -135,7 +141,7 @@ RESPOSTA ESPECIALIZADA:"""
             return self._format_places_info(results) if results else "Nenhuma informação específica encontrada."
     
     def _create_broader_query(self, query: str) -> str:
-        """Cria consulta mais ampla se a busca específica não retornar resultados."""
+
         query_lower = query.lower()
         
         # Mapeia termos específicos para termos mais amplos
@@ -161,7 +167,7 @@ RESPOSTA ESPECIALIZADA:"""
         return "ponto turístico atração"
     
     def _format_places_info(self, places: List[Dict]) -> str:
-        """Formata informações dos locais para o prompt."""
+
         if not places:
             return "Nenhum local encontrado."
         
@@ -198,7 +204,7 @@ RESPOSTA ESPECIALIZADA:"""
         return "\n\n---\n\n".join(formatted_places)
     
     def _get_additional_context(self, query: str, city: str) -> str:
-        """Obtém contexto adicional relevante para a consulta."""
+
         context_parts = []
         
         # Contexto sobre a cidade

@@ -13,10 +13,7 @@ from .chains.translation_chain import TranslationChain
 
 
 class TravelGuideSystem:
-    """Sistema principal do guia de viagem inteligente."""
-    
     def __init__(self):
-        """Inicializa o sistema completo."""
         print("Inicializando Sistema de Guia de Viagem...")
         
         # Configurações
@@ -27,11 +24,11 @@ class TravelGuideSystem:
         print("Configurando sistema RAG...")
         self.rag_system = setup_rag_system()
         
-        # Router principal
+        # Router
         print("Inicializando router...")
         self.router = RouterChain()
         
-        # Cadeias especializadas
+        # Chains especializadas
         print("Configurando cadeias especializadas...")
         self.chains = {
             "itinerary_chain": ItineraryChain(self.rag_system),
@@ -43,18 +40,8 @@ class TravelGuideSystem:
         print("Sistema inicializado com sucesso!")
     
     def process_query(self, query: str, verbose: bool = False) -> Dict[str, Any]:
-        """
-        Processa uma consulta do usuário através do sistema completo.
-        
-        Args:
-            query: Consulta do usuário
-            verbose: Se deve incluir informações detalhadas de debug
-            
-        Returns:
-            Dicionário com a resposta processada
-        """
         try:
-            # 1. Roteamento da consulta
+            # Roteamento
             if verbose:
                 print(f"\n🔍 Analisando consulta: '{query}'")
             
@@ -66,7 +53,7 @@ class TravelGuideSystem:
                 if route_info['extracted_info']:
                     print(f"📊 Informações extraídas: {route_info['extracted_info']}")
             
-            # 2. Processamento pela chain apropriada
+            # Processamento
             chain_name = route_info['chain_target']
             chain = self.chains.get(chain_name)
             
@@ -80,10 +67,9 @@ class TravelGuideSystem:
             if verbose:
                 print(f"⚙️ Processando com {chain_name}...")
             
-            # Executa processamento específico
             result = self._execute_chain(chain_name, chain, route_info)
             
-            # 3. Prepara resposta final
+            # Resposta
             response = {
                 "success": result.get("success", False),
                 "intention": route_info["intention"],
@@ -92,7 +78,6 @@ class TravelGuideSystem:
             }
             
             if result.get("success"):
-                # Adiciona resultado específico da chain
                 if chain_name == "itinerary_chain":
                     response.update({
                         "type": "itinerary",
