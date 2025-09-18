@@ -15,7 +15,6 @@ class Config:
     PINECONE_API_KEY = os.getenv("PINECONE_API_KEY")
     PINECONE_ENVIRONMENT = os.getenv("PINECONE_ENVIRONMENT", "gcp-starter")
     PINECONE_INDEX_NAME = os.getenv("PINECONE_INDEX_NAME", "guia-viagem")
-    OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")  # Para embeddings (alternativa)
     
     # Modelos
     GROQ_MODEL = "llama-3.1-8b-instant"  # Modelo Groq padrão
