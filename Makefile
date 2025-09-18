@@ -165,7 +165,6 @@ clean:
 clean-all: clean
 	@echo "$(BLUE)🗑️  Removendo ambiente virtual...$(RESET)"
 	@rm -rf $(VENV_NAME)
-	@rm -f .env
 	@echo "$(GREEN)✅ Limpeza completa concluída!$(RESET)"
 
 ## 🔄 Reinstala tudo do zero
