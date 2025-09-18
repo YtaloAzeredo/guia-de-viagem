@@ -99,9 +99,9 @@ run:
 		exit 1; \
 	fi
 	@if [ -f "$(VENV_PATH)/activate" ]; then \
-		. $(VENV_PATH)/activate && $(PYTHON) $(MAIN_FILE); \
+		. $(VENV_PATH)/activate && $(PYTHON) -m src.main; \
 	else \
-		$(PYTHON) $(MAIN_FILE); \
+		$(PYTHON) -m src.main; \
 	fi
 
 ## 🧪 Executa testes básicos do sistema
@@ -109,12 +109,12 @@ test:
 	@echo "$(BLUE)🧪 Executando testes básicos...$(RESET)"
 	@if [ -f "$(VENV_PATH)/activate" ]; then \
 		. $(VENV_PATH)/activate && $(PYTHON) -c "import src.config; print('✅ Configurações OK')"; \
-		. $(VENV_PATH)/activate && $(PYTHON) -c "from src.rag import TravelRAG; print('✅ RAG System OK')"; \
-		. $(VENV_PATH)/activate && $(PYTHON) -c "from src.router import QueryRouter; print('✅ Router OK')"; \
+		. $(VENV_PATH)/activate && $(PYTHON) -c "from src.rag import setup_rag_system; print('✅ RAG System OK')"; \
+		. $(VENV_PATH)/activate && $(PYTHON) -c "from src.router import RouterChain; print('✅ Router OK')"; \
 	else \
 		$(PYTHON) -c "import src.config; print('✅ Configurações OK')"; \
-		$(PYTHON) -c "from src.rag import TravelRAG; print('✅ RAG System OK')"; \
-		$(PYTHON) -c "from src.router import QueryRouter; print('✅ Router OK')"; \
+		$(PYTHON) -c "from src.rag import setup_rag_system; print('✅ RAG System OK')"; \
+		$(PYTHON) -c "from src.router import RouterChain; print('✅ Router OK')"; \
 	fi
 	@echo "$(GREEN)✅ Todos os testes passaram!$(RESET)"
 

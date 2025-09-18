@@ -3,28 +3,28 @@
 # ===================================
 
 # LangChain Framework
-langchain==0.1.17
-langchain-community==0.0.37
-langchain-core==0.1.52
-langchain-groq==0.1.4
+langchain>=0.2.0,<0.4.0
+langchain-community>=0.2.0,<0.4.0
+langchain-core>=0.2.0,<0.4.0
+langchain-groq>=0.1.6,<0.3.0
 
 # LLM e AI Providers
-groq==0.8.0
+groq>=0.9.0,<2.0.0
 
 # Base de Dados Vetorial
-pinecone==5.0.0
+pinecone>=4.0.0,<6.0.0
 
 # Processamento de Texto e Embeddings
-tiktoken==0.7.0
-sentence-transformers==2.7.0
+tiktoken>=0.8.0,<1.0.0
+sentence-transformers>=2.7.0,<4.0.0
 
 # Processamento de Dados
-pandas==2.2.2
-numpy==1.26.4
+numpy>=1.24.0,<2.0.0
+pandas>=2.0.0,<3.0.0
 
 # Configuração e Ambiente
-python-dotenv==1.0.1
+python-dotenv>=1.0.0,<2.0.0
 
 # Validação de Dados
-pydantic==2.7.1
-typing-extensions==4.11.0
+pydantic>=2.8.0,<3.0.0
+typing-extensions>=4.8.0,<5.0.0
