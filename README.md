@@ -74,19 +74,6 @@ python run.py
 ```
 *Interface de chat em tempo real - a melhor forma de testar o sistema!*
 
-### 🤖 Demonstração Automatizada
-```bash
-python demo_auto.py
-```
-*Demonstra todos os tipos de consulta sem interação*
-
-### 📊 Testes Completos
-```bash
-python demo_final.py          # Demo detalhada
-python examples/demo.py       # Interface com menu
-python quick_start.py         # Teste rápido
-```
-
 📖 **[Guia Detalhado de Instalação](INSTALACAO.md)**
 
 ## 🎯 Como Funciona
@@ -178,76 +165,12 @@ Cada intenção é processada por uma **chain dedicada**:
    • Gestos e etiqueta local
 ```
 
-## 🧪 Testes e Demos
-
-```bash
-# Execute demos interativos
-python examples/demo.py
-
-# Testes automatizados  
-python examples/test_basic.py
-
-# Benchmark de performance
-python examples/demo.py  # Opção 3
-```
-
-## 🔧 Configuração Avançada
-
-### Personalizar Modelo Groq
-```python
-# src/config.py
-GROQ_MODEL = "llama3-70b-8192"  # Modelo mais poderoso
-```
-
-### Ajustar Sistema RAG
-```python
-TOP_K_RESULTS = 10           # Mais resultados por busca
-SIMILARITY_THRESHOLD = 0.6   # Threshold mais permissivo
-```
-
-### Adicionar Nova Cidade
-1. Crie `src/data/nova_cidade.json` com estrutura similar
-2. Adicione cidade em `SUPPORTED_CITIES` (config.py)
-3. Execute sistema e digite `reload` para indexar
-
 ## 📊 Performance
 
 - **⚡ Tempo médio**: ~2-3s por consulta
 - **🎯 Precisão**: >90% na classificação de intenções  
 - **🔍 Recall**: >85% na recuperação RAG
 - **📚 Base**: 19 locais indexados, expansível
-
-## 🔮 Funcionalidades Futuras
-
-- [ ] **Interface Web**: Streamlit para GUI amigável
-- [ ] **Mais Cidades**: Londres, Tóquio, Nova York
-- [ ] **APIs Tempo Real**: Transporte, clima, eventos
-- [ ] **Cache Inteligente**: Respostas frequentes
-- [ ] **Multimodal**: Suporte a imagens de locais
-- [ ] **Agentes Avançados**: Planejamento multi-etapas
-
-## 📈 Valor Educacional
-
-Este projeto demonstra:
-- **🔗 Router Chains**: Classificação e roteamento inteligente
-- **🧠 RAG Pattern**: Recuperação + geração contextual
-- **⚡ Groq Integration**: LLM inference otimizada
-- **📊 Vector Databases**: Pinecone para busca semântica
-- **🏗️ Modular Architecture**: Chains especializadas e reutilizáveis
-
----
-
-## 🚀 Começar Agora
-
-```bash
-git clone [URL_REPO]
-cd guia_viagem  
-python setup.py
-# Configure .env com suas APIs
-python src/main.py
-```
-
-**🎉 Pronto! Seu assistente de viagem IA está funcionando!**
 
 ---
 
