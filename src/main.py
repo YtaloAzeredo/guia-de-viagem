@@ -190,7 +190,7 @@ class TravelGuideInterface:
         print("  • 'Como chegar ao Cristo Redentor?'")
         print("  • 'Melhores restaurantes no Rio de Janeiro'")
         print("  • 'Frases úteis em francês para turistas'")
-        print(f"\n🏙️ Cidades disponíveis: {', '.join(self.system.config.SUPPORTED_CITIES)}")
+        print(f"\n🏙️  Cidades disponíveis: {', '.join(self.system.config.SUPPORTED_CITIES)}")
         print("\n💡 Digite 'sair' para encerrar ou 'info' para informações do sistema")
         print("-"*60)
     
