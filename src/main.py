@@ -3,6 +3,10 @@ Sistema principal do Guia de Viagem Inteligente.
 Orquestra todas as cadeias especializadas através do router.
 """
 
+import os
+# Configuração para evitar warnings do HuggingFace tokenizers
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
 from typing import Dict, Any, Optional
 from .config import Config
 from .rag import setup_rag_system
@@ -11,6 +15,7 @@ from .chains.itinerary_chain import ItineraryChain
 from .chains.logistics_chain import LogisticsChain
 from .chains.local_info_chain import LocalInfoChain
 from .chains.translation_chain import TranslationChain
+from .utils import display_response
 
 
 class TravelGuideSystem:
@@ -237,8 +242,8 @@ class TravelGuideInterface:
                 print("\n🤔 Analisando sua pergunta...")
                 response = self.system.process_query(user_input, verbose=True)
 
-                # Exibe resposta
-                self._display_response(response)
+                # Exibe resposta com markdown
+                self._display_response(response, user_input)
 
             except KeyboardInterrupt:
                 print("\n\n👋 Sistema encerrado pelo usuário. Até logo!")
@@ -261,58 +266,10 @@ class TravelGuideInterface:
             print(f"   • {intention}: {description}")
         print("-" * 50)
 
-    def _display_response(self, response: Dict[str, Any]):
-        """Exibe resposta formatada do sistema."""
-        print("\n" + "=" * 60)
-
-        if not response.get("success", False):
-            print("❌ ERRO")
-            print("=" * 60)
-            print(f"🚨 {response.get('error', 'Erro desconhecido')}")
-            return
-
-        # Cabeçalho baseado no tipo
-        response_type = response.get("type", "unknown")
-        icons = {
-            "itinerary": "🗺️ ROTEIRO PERSONALIZADO",
-            "logistics": "🚗 INFORMAÇÕES LOGÍSTICAS",
-            "local_info": "📍 INFORMAÇÕES LOCAIS",
-            "translation": "🗣️ GUIA DE TRADUÇÃO",
-        }
-
-        print(icons.get(response_type, "📋 RESPOSTA"))
-        print("=" * 60)
-
-        # Conteúdo específico por tipo
-        if response_type == "itinerary":
-            if response.get("city"):
-                print(f"🏙️ Cidade: {response['city']}")
-            if response.get("duration_days"):
-                print(f"⏱️ Duração: {response['duration_days']} dias")
-            if response.get("interests"):
-                print(f"🎯 Interesses: {', '.join(response['interests'])}")
-            print("\n" + response.get("itinerary", ""))
-
-        elif response_type == "logistics":
-            if response.get("city"):
-                print(f"🏙️ Cidade: {response['city']}")
-            print("\n" + response.get("logistics_info", ""))
-
-        elif response_type == "local_info":
-            if response.get("city"):
-                print(f"🏙️ Cidade: {response['city']}")
-            if response.get("places_found"):
-                print(f"📊 Locais encontrados: {response['places_found']}")
-            print("\n" + response.get("local_info", ""))
-
-        elif response_type == "translation":
-            if response.get("target_language"):
-                print(f"🗣️ Idioma: {response['target_language']}")
-            if response.get("travel_context"):
-                print(f"🎯 Contexto: {response['travel_context']}")
-            print("\n" + response.get("translation_guide", ""))
-
-        print("\n" + "-" * 60)
+    def _display_response(self, response: Dict[str, Any], query: str = ""):
+        """Exibe resposta formatada do sistema usando markdown."""
+        # Usa a nova função de exibição com markdown
+        display_response(response, query)
 
     def process_single_query(self, query: str, verbose: bool = False) -> Dict[str, Any]:
         """Processa uma única consulta (para uso programático)."""

@@ -6,6 +6,9 @@ import json
 import os
 from typing import List, Dict, Any, Optional
 
+# Configurações para evitar warnings do HuggingFace
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
 # Importações
 try:
     from sentence_transformers import SentenceTransformer
@@ -43,6 +46,10 @@ class RAGSystem:
         # Inicializa modelo de embedding
         try:
             self.embedding_model = SentenceTransformer(self.config.EMBEDDING_MODEL)
+            sample_embedding = self.embedding_model.encode("test")
+            self.embedding_dimension = len(sample_embedding)
+            print(f"🔍 Modelo de embedding: {self.config.EMBEDDING_MODEL}")
+            print(f"📐 Dimensões detectadas: {self.embedding_dimension}")
         except Exception as e:
             print(f"Erro ao carregar modelo de embedding: {e}")
             self.use_fallback = True
@@ -95,23 +102,40 @@ class RAGSystem:
             self._load_local_data()
             return
 
-        index_name = self.config.PINECONE_INDEX_NAME
+        # Cria nome do índice específico para as dimensões
+        base_name = self.config.PINECONE_INDEX_NAME
+        index_name = f"{base_name}-{self.embedding_dimension}d"
 
         # Verifica se o índice existe
         existing_indexes = self.pc.list_indexes()
         index_names = [idx["name"] for idx in existing_indexes.indexes]
 
         if index_name not in index_names:
-            print(f"Criando índice {index_name}...")
-            self.pc.create_index(
-                name=index_name,
-                dimension=self.config.EMBEDDING_DIMENSION,
-                metric="cosine",
-                spec=ServerlessSpec(cloud="aws", region="us-east-1"),
-            )
+            print(f"🔧 Criando índice {index_name} com {self.embedding_dimension} dimensões...")
+            try:
+                self.pc.create_index(
+                    name=index_name,
+                    dimension=self.embedding_dimension,
+                    metric="cosine",
+                    spec=ServerlessSpec(cloud="aws", region="us-east-1"),
+                )
+                print(f"✅ Índice {index_name} criado com sucesso!")
+            except Exception as e:
+                print(f"❌ Erro ao criar índice: {e}")
+                self.use_fallback = True
+                self._load_local_data()
+                return
+        else:
+            print(f"📋 Usando índice existente: {index_name}")
 
         # Conecta ao índice
-        self.index = self.pc.Index(index_name)
+        try:
+            self.index = self.pc.Index(index_name)
+            print(f"🔗 Conectado ao índice {index_name}")
+        except Exception as e:
+            print(f"❌ Erro ao conectar ao índice: {e}")
+            self.use_fallback = True
+            self._load_local_data()
 
     def load_and_index_data(self, force_reload: bool = False):
         """Carrega e indexa dados dos arquivos JSON."""

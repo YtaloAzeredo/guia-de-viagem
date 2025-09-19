@@ -5,6 +5,9 @@ Configurações centrais do sistema de guia de viagem.
 import os
 from dotenv import load_dotenv
 
+# Resolve warnings do HuggingFace tokenizers
+os.environ["TOKENIZERS_PARALLELISM"] = "false"
+
 # Carrega variáveis de ambiente
 load_dotenv()
 
@@ -21,7 +24,6 @@ class Config:
     EMBEDDING_MODEL = "all-MiniLM-L6-v2"
 
     # Configurações RAG
-    EMBEDDING_DIMENSION = 384
     TOP_K_RESULTS = 5
     SIMILARITY_THRESHOLD = 0.7
 
