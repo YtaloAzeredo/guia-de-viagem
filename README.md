@@ -164,14 +164,6 @@ Cada intenção é processada por uma **chain dedicada**:
    • Dicas culturais importantes
    • Gestos e etiqueta local
 ```
-
-## 📊 Performance
-
-- **⚡ Tempo médio**: ~2-3s por consulta
-- **🎯 Precisão**: >90% na classificação de intenções  
-- **🔍 Recall**: >85% na recuperação RAG
-- **📚 Base**: 19 locais indexados, expansível
-
 ---
 
 *💡 Este projeto foi desenvolvido para demonstrar as capacidades avançadas do LangChain com Router Chains, RAG e sistemas de classificação de intenções para casos de uso reais de turismo.*
